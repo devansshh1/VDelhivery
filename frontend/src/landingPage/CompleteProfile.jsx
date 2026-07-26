@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useUser } from "@clerk/react";
 import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const CompleteProfile = () => {
   const { user } = useUser();
@@ -20,6 +21,7 @@ const CompleteProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Button Clicked ✅");
     const data = {
       clerkId: user.id,
       name: user.fullName,
@@ -33,6 +35,7 @@ const CompleteProfile = () => {
 
       console.log(res.data);
       alert("Profile saved successfully!");
+      navigate("/");
     } catch (error) {
       console.log(error);
     }

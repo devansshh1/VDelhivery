@@ -31,11 +31,25 @@ const userSchema = new mongoose.Schema(
     },
     rating: {
       type: Number,
-      default: 5,
+      default: 3,
     },
     totalDeliveries: {
       type: Number,
       default: 0,
+    },
+
+    successfulDeliveries: {
+      type: Number,
+      default: 0,
+    },
+    earnings: {
+      type: Number,
+      default: 0,
+    },
+
+    badge: {
+      type: String,
+      default: "Beginner",
     },
   },
   { timestamps: true },

@@ -2,7 +2,11 @@ import React, { useEffect } from "react";
 import { Spotlight } from "../components/ui/spotlight";
 import { Show, SignUpButton, UserButton } from "@clerk/react";
 import api from "../api/axios";
+
+import { useNavigate } from "react-router-dom";
+
 const HomePage = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,7 +72,10 @@ const HomePage = () => {
           </p>
 
           <div className="mt-8 flex">
-            <button className="w-full rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 sm:w-auto">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="w-full rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 sm:w-auto"
+            >
               Get Started
             </button>
           </div>
@@ -84,6 +91,15 @@ const HomePage = () => {
         <h2 className="text-center text-3xl font-bold sm:text-4xl">
           Why VDelhivery?
         </h2>
+        <br />
+        <p className="mx-auto mt-6 max-w-4xl px-4 text-center text-lg leading-8 text-gray-300">
+          VDelhivery makes campus deliveries fast, secure, and hassle-free.
+          Whether you need to send or receive a parcel, or want to earn extra
+          money by delivering parcels for fellow students, VDelhivery provides a
+          simple and reliable platform for both. With real-time updates,
+          affordable delivery services, and a trusted student community, we help
+          you save time while creating earning opportunities across the campus.
+        </p>
       </section>
 
       {/* How it Works */}
