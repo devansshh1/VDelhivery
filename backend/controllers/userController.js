@@ -55,3 +55,24 @@ export const getUserProfile = async (req, res) => {
     });
   }
 };
+
+export const deleteUser = async (req, res) => {
+  try {
+    console.log("DELETE request received for:", req.params.clerkId);
+    const { clerkId } = req.params;
+
+    const deletedUser = await User.findOneAndDelete({ clerkId });
+
+    console.log("Deleted User:", deletedUser);
+
+    res.json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
