@@ -92,9 +92,7 @@ const Dashboard = () => {
           className="rounded-xl bg-gray-900 p-8 hover:bg-gray-800 cursor-pointer transition"
         >
           <h2 className="text-2xl font-semibold">📦 Order Parcel</h2>
-          <p className="mt-2 text-gray-400">
-            Send a parcel to another student.
-          </p>
+          <p className="mt-2 text-gray-400">Ask for parcel delivery.</p>
         </div>
 
         <div className="rounded-xl bg-gray-900 p-8 hover:bg-gray-800 cursor-pointer">
