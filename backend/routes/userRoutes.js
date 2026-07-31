@@ -1,5 +1,13 @@
 import express from "express";
+<<<<<<< HEAD
 import { createUser, getUserProfile } from "../controllers/userController.js";
+=======
+import {
+  createUser,
+  getUserProfile,
+  deleteUser,
+} from "../controllers/userController.js";
+>>>>>>> main
 
 const router = express.Router();
 
@@ -19,4 +27,10 @@ router.post("/", createUser);
 
 router.get("/:clerkId", getUserProfile);
 
+<<<<<<< HEAD
+=======
+//Delete user profile
+router.delete("/:clerkId", deleteUser);
+
+>>>>>>> main
 export default router;
