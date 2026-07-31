@@ -67,7 +67,7 @@ const OrderParcel = () => {
       });
       alert("Delivery Request Created!");
 
-      navigate("/dashboard");
+      navigate("/searching");
       console.log(res.data);
     } catch (error) {
       console.log(error);
