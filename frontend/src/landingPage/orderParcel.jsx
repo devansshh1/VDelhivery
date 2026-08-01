@@ -65,7 +65,6 @@ const OrderParcel = () => {
         preferredDeliveryTime: form.preferredDeliveryTime,
         additionalInstructions: form.additionalInstructions,
       });
-      alert("Delivery Request Created!");
 
       navigate("/searching");
       console.log(res.data);

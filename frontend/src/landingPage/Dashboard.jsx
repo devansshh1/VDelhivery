@@ -2,21 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/react";
 import api from "../api/axios";
 import { FaStar } from "react-icons/fa";
-<<<<<<< HEAD
-import Chat from '../components/chat';
-=======
 import { useNavigate } from "react-router-dom";
->>>>>>> main
 
 const Dashboard = () => {
   const { user } = useUser();
   const [profile, setProfile] = useState(null);
-<<<<<<< HEAD
-  const [chat,showchat]=useState(false);
-
-=======
   const navigate = useNavigate();
->>>>>>> main
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -32,8 +23,6 @@ const Dashboard = () => {
     }
   }, [user]);
 
-<<<<<<< HEAD
-=======
   // const handleDeleteAccount = async () => {
   //   try {
   //     // Delete user from MongoDB
@@ -71,7 +60,6 @@ const Dashboard = () => {
       console.error(error);
     }
   };
->>>>>>> main
   if (!profile) {
     return <h1 className="text-white p-10">Loading...</h1>;
   }
@@ -97,14 +85,6 @@ const Dashboard = () => {
       </div>
 
       {/* Dashboard Cards */}
-<<<<<<< HEAD
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="rounded-xl bg-gray-900 p-8 hover:bg-gray-800 cursor-pointer">
-          <h2 className="text-2xl font-semibold">📦 Order Parcel</h2>
-          <p className="mt-2 text-gray-400">
-            Send a parcel to another student.
-          </p>
-=======
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
@@ -113,31 +93,17 @@ const Dashboard = () => {
         >
           <h2 className="text-2xl font-semibold">📦 Order Parcel</h2>
           <p className="mt-2 text-gray-400">Ask for parcel delivery.</p>
->>>>>>> main
         </div>
 
-        <div className="rounded-xl bg-gray-900 p-8 hover:bg-gray-800 cursor-pointer">
+        <div
+          onClick={() => navigate("/browse-requests")}
+          className="rounded-xl bg-gray-900 p-8 hover:bg-gray-800 cursor-pointer"
+        >
           <h2 className="text-2xl font-semibold">🚚 Get Parcel</h2>
           <p className="mt-2 text-gray-400">
             Accept delivery requests and earn money.
           </p>
         </div>
-<<<<<<< HEAD
-      </div>
-      
-    <button
-    onClick={() => showchat(!chat)}
->
-    Chat Here
-</button>
-      
-    {chat && 
-    <Chat
-        orderId="12345"
-        currentUser={{ id: user.id }}
-    />
-    }
-=======
         <button
           onClick={handleDeleteAccount}
           className="mt-10 rounded-lg bg-white px-4 py-2 text-black hover:bg-red-700"
@@ -145,7 +111,6 @@ const Dashboard = () => {
           Delete Account
         </button>
       </div>
->>>>>>> main
     </div>
   );
 };

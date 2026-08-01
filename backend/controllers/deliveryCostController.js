@@ -47,3 +47,55 @@ export const createDelivery = async (req, res) => {
     });
   }
 };
+
+export const getSearchingDeliveries = async (req, res) => {
+  try {
+    const deliveries = await Delivery.find({
+      status: "Searching",
+    });
+    res.status(200).json({
+      success: true,
+      deliveries,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const acceptDelivery = async (req, res) => {
+  try {
+    const { deliveryId } = req.params;
+    const { deliveryPartnerClerkId, deliveryPartnerName } = req.body;
+
+    const delivery = await Delivery.findById(deliveryId);
+    if (!delivery) {
+      return res.status(404).json({
+        success: false,
+        message: "Delivery not found",
+      });
+    }
+    if (delivery.status !== "Searching") {
+      return res.status(400).json({
+        success: false,
+        message: "Delivery already accepted",
+      });
+    }
+
+    delivery.status = "Accepted";
+    delivery.deliveryPartnerClerkId = deliveryPartnerClerkId;
+    delivery.deliveryPartnerName = deliveryPartnerName;
+    await delivery.save();
+    res.json({
+      success: true,
+      delivery,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

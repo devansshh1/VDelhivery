@@ -5,11 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 const CompleteProfile = () => {
   const { user } = useUser();
-<<<<<<< HEAD
 
-=======
   const navigate = useNavigate();
->>>>>>> main
+
   console.log("User Object:", user);
   console.log("Full Name:", user?.fullName);
   console.log("First Name:", user?.firstName);
@@ -37,15 +35,13 @@ const CompleteProfile = () => {
     try {
       const res = await api.post("/api/users", data);
 
-<<<<<<< HEAD
       console.log(res.data);
       alert("Profile saved successfully!");
       navigate("/");
-=======
+
       alert("Profile saved successfully!");
 
       navigate("/"); // Home Page
->>>>>>> main
     } catch (error) {
       console.log(error);
     }

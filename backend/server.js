@@ -4,11 +4,9 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import User from "./models/User.js";
 import userRoutes from "./routes/userRoutes.js";
-<<<<<<< HEAD
-=======
+
 import deliveryRoutes from "./routes/deliveryRoutes.js";
 
->>>>>>> main
 console.log("✅ userRoutes imported:", userRoutes);
 
 dotenv.config();
@@ -20,11 +18,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api/users", userRoutes);
-<<<<<<< HEAD
-=======
+
 app.use("/api/delivery", deliveryRoutes);
 
->>>>>>> main
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });

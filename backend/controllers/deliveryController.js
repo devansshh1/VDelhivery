@@ -1,12 +1,10 @@
-<<<<<<< HEAD
 import React from "react";
 import Delivery from "../models/Delivery";
 import { getBadge } from "../utils/badge.js";
-=======
+
 import Delivery from "../models/Delivery.js";
 import { getBadge } from "../utils/badge.js";
 import deliveryCharge from "../utils/deliveryCharge.js";
->>>>>>> main
 
 const user = await User.findById(delivery.deliveryPartner);
 
