@@ -2,7 +2,7 @@ import express from "express";
 import {
   createUser,
   getUserProfile,
-  deleteUser,
+  deleteUserAccount,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -12,18 +12,15 @@ router.get("/", (req, res) => {
   res.send("User route is working!");
 });
 
-router.get("/hello", (req, res) => {
-  res.send("Hello Route Working");
-});
 
 // Create User
 router.post("/", createUser);
 
 // Get User Profile
 
-router.get("/:clerkId", getUserProfile);
+router.get("/:clerkId/profile", getUserProfile);
 
 //Delete user profile
-router.delete("/:clerkId", deleteUser);
+router.delete("/:clerkId/delete", deleteUserAccount);
 
 export default router;

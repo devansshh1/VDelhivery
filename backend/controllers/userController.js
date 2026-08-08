@@ -1,11 +1,20 @@
 import User from "../models/User.js";
+import Order from '../models/Delivery.js'
 
-// Create User
 export const createUser = async (req, res) => {
   try {
     console.log("Incoming Data:", req.body);
 
-    const user = await User.create(req.body);
+    const user = await User.findOneAndUpdate(
+      { clerkId: req.body.clerkId },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+        setDefaultsOnInsert: true,
+        upsert: true,
+      },
+    );
 
     res.status(201).json({
       success: true,
@@ -55,24 +64,43 @@ export const getUserProfile = async (req, res) => {
     });
   }
 };
+export const deleteUserAccount = async (req, res) => {
+  const { clerkId } = req.params;
 
-export const deleteUser = async (req, res) => {
+  if (!clerkId) {
+    return res.status(400).json({
+      success: false,
+      message: "Clerk ID is required.",
+    });
+  }
+
   try {
-    console.log("DELETE request received for:", req.params.clerkId);
-    const { clerkId } = req.params;
+    const [deletedUser, deletedDeliveries, updatedDeliveries] = await Promise.all([
+      User.findOneAndDelete({ clerkId }),
+      Order.deleteMany({
+        $or: [
+          { ownerClerkId: clerkId },
+          { deliveryPartnerClerkId: clerkId },
+        ],
+      }),
+      Order.updateMany(
+        { "interestedStudents.clerkId": clerkId },
+        { $pull: { interestedStudents: { clerkId } } },
+      ),
+    ]);
 
-    const deletedUser = await User.findOneAndDelete({ clerkId });
-
-    console.log("Deleted User:", deletedUser);
-
-    res.json({
+    return res.status(200).json({
       success: true,
-      message: "User deleted successfully",
+      message: "User app data deleted successfully.",
+      deletedUser: Boolean(deletedUser),
+      deletedDeliveries: deletedDeliveries.deletedCount,
+      updatedDeliveries: updatedDeliveries.modifiedCount,
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("Account data deletion failed:", error);
+    return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to delete account data.",
     });
   }
 };

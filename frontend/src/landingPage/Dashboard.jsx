@@ -1,63 +1,80 @@
 import React, { useEffect, useState } from "react";
-import { useUser } from "@clerk/react";
+import { useUser,useClerk } from "@clerk/react";
 import api from "../api/axios";
 import { FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { user } = useUser();
-  const [profile, setProfile] = useState(null);
+  const { signOut } = useClerk();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Clear alias: This makes it obvious that you are passing the Clerk ID into the URL
+  const clerkId = user?.id; 
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await api.get(`/api/users/${user.id}`);
+        // Clear and readable path mapping to your /:clerkId/profile backend route
+        const res = await api.get(`/api/users/${clerkId}/profile`);
         setProfile(res.data.data);
       } catch (error) {
         console.error(error);
+        if (error.response?.status === 404) {
+          navigate("/complete-profile");
+        }
       }
     };
 
-    if (user) {
+    if (clerkId) {
       fetchUser();
     }
-  }, [user]);
-
-  // const handleDeleteAccount = async () => {
-  //   try {
-  //     // Delete user from MongoDB
-  //     await api.delete(`/api/users/${user.id}`);
-
-  //     // Delete Clerk account
-  //     await user.delete();
-
-  //     alert("Account deleted successfully!");
-
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.error("Delete Error:", error);
-
-  //     if (error.response) {
-  //       console.log(error.response.data);
-  //     }
-
-  //     alert("Failed to delete account.");
-  //   }
-  // };
+  }, [clerkId, navigate]);
 
   const handleDeleteAccount = async () => {
+    if (isDeleting) return;
+
+    const confirmDelete = window.confirm("Are you sure? This deletes everything.");
+    if (!confirmDelete) return;
+
+    setIsDeleting(true);
+
     try {
-      console.log("Deleting from MongoDB...");
-      await api.delete(`/api/users/${user.id}`);
-      console.log("MongoDB user deleted ✅");
+      // Delete VDelhivery data first. This endpoint has already completed if
+      // a later Clerk operation fails, so keep its outcome separate.
+      await api.delete(`/api/users/${clerkId}/delete`);
+    } catch (error) {
+      console.error("App-data deletion failed:", error);
+      alert("Could not delete your VDelhivery data. Please try again.");
+      setIsDeleting(false);
+      return;
+    }
 
-      console.log("Deleting Clerk account...");
-      await user.delete();
-      console.log("Clerk account deleted ✅");
+    try {
+      if (typeof user.delete === "function") {
+        await user.delete();
+      } else {
+        await signOut();
+      }
 
+      alert("Your account and app data were deleted.");
       navigate("/");
     } catch (error) {
-      console.error(error);
+      // The app data was deleted successfully, but Clerk account removal did not.
+      console.error("Clerk account deletion failed:", error);
+      try {
+        await signOut();
+      } catch (signOutError) {
+        console.error("Sign-out after failed Clerk deletion also failed:", signOutError);
+      }
+      alert(
+        "Your VDelhivery data was deleted, but your sign-in account could not be removed. You have been signed out."
+      );
+      navigate("/");
+    } finally {
+      setIsDeleting(false);
     }
   };
   if (!profile) {
@@ -105,10 +122,11 @@ const Dashboard = () => {
           </p>
         </div>
         <button
-          onClick={handleDeleteAccount}
-          className="mt-10 rounded-lg bg-white px-4 py-2 text-black hover:bg-red-700"
+          onClick={ handleDeleteAccount }
+          disabled={isDeleting}
+          className="mt-10 rounded-lg bg-white px-4 py-2 text-black hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Delete Account
+          {isDeleting ? "Deleting account..." : "Delete Account"}
         </button>
       </div>
     </div>

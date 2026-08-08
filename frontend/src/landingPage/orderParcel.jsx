@@ -4,10 +4,18 @@ import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
 const OrderParcel = () => {
-  const { user } = useUser();
+
+      const { user } = useUser();
+  
+  
+    
+    const clerkId = user?.id; 
+  
+
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState(null);
+  const [profileError, setProfileError] = useState("");
 
   const [form, setForm] = useState({
     courierCompany: "",
@@ -20,17 +28,22 @@ const OrderParcel = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await api.get(`/api/users/${user.id}`);
+        const res = await api.get(`/api/users/${clerkId}/profile`);
         setProfile(res.data.data);
       } catch (error) {
         console.error("Profile Error:", error);
+        if (error.response?.status === 404) {
+          navigate("/complete-profile", { replace: true });
+          return;
+        }
+        setProfileError("We could not load your profile. Please try again.");
       }
     };
 
     if (user) {
       fetchProfile();
     }
-  }, [user]);
+  }, [clerkId, navigate]);
 
   const handleChange = (e) => {
     setForm({
@@ -67,7 +80,7 @@ const OrderParcel = () => {
       });
 
       navigate("/searching");
-      console.log(res.data);
+     
     } catch (error) {
       console.log(error);
 
@@ -80,7 +93,7 @@ const OrderParcel = () => {
   if (!profile) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <h1 className="text-xl">Loading...</h1>
+        <h1 className="text-xl">{profileError || "Loading..."}</h1>
       </div>
     );
   }
@@ -165,7 +178,7 @@ const OrderParcel = () => {
             </p>
 
             <p className="text-xl font-semibold mt-2">
-              📦 Campus Parcel Collection Point
+                Parcel Collection Point
             </p>
           </div>
         </div>
@@ -199,9 +212,26 @@ const OrderParcel = () => {
               </select>
             </div>
 
+            {form.courierCompany === "Other" && (
+  <div className="mt-4">
+    <label className="block mb-2 text-gray-400">
+      Specify Courier Company Name
+    </label>
+    <input
+      type="text"
+      name="customCourierCompany"
+      value={form.customCourierCompany || ""}
+      onChange={handleChange}
+      placeholder="Enter company name"
+      className="w-full rounded-lg bg-gray-800 p-3 outline-none focus:ring-2 focus:ring-blue-500 text-white"
+      required
+    />
+  </div>
+)}
+
             {/* Parcel Size */}
             <div>
-              <label className="block mb-2 text-gray-400">Parcel Size</label>
+              <label className="block mb-2 text-gray-400">Approximate Parcel Size</label>
 
               <select
                 name="parcelSize"
@@ -210,7 +240,7 @@ const OrderParcel = () => {
                 className="w-full rounded-lg bg-gray-800 p-3 outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Parcel Size</option>
-
+               
                 <option>Small</option>
                 <option>Medium</option>
                 <option>Large</option>

@@ -72,12 +72,15 @@ const HomePage = () => {
           </p>
 
           <div className="mt-8 flex">
+            <Show when="signed-out"><SignUpButton  className="w-full rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 sm:w-auto"><button>Get Started</button></SignUpButton></Show>
+            <Show when="signed-in">
             <button
               onClick={() => navigate("/dashboard")}
               className="w-full rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 sm:w-auto"
             >
               Get Started
             </button>
+            </Show>
           </div>
         </div>
       </section>

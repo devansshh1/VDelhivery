@@ -8,40 +8,50 @@ const CompleteProfile = () => {
 
   const navigate = useNavigate();
 
-  console.log("User Object:", user);
-  console.log("Full Name:", user?.fullName);
-  console.log("First Name:", user?.firstName);
-  console.log("Last Name:", user?.lastName);
 
   const [form, setForm] = useState({
-    name: "",
-    registrationNumber: "",
+
     gender: "",
     hostelBlock: "",
   });
 
+  const getCollegeDetails = () => {
+  const email = user?.primaryEmailAddress?.emailAddress?.toLowerCase();
+
+  if (!email?.endsWith("@vitbhopal.ac.in")) {
+    throw new Error("Please sign in using your VIT Bhopal email address.");
+  }
+
+  const [name, registrationNumber] = email.split("@")[0].split(".");
+
+  if (!name || !registrationNumber) {
+    throw new Error("Your college email format is invalid.");
+  }
+
+  return { name, registrationNumber: registrationNumber.toUpperCase() };
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Button Clicked ✅");
+  
+
+    
+    try {
+    const{name,registrationNumber}=getCollegeDetails();
     const data = {
       clerkId: user.id,
-      name: user.fullName,
-      email: user.primaryEmailAddress.emailAddress,
+      email:user.primaryEmailAddress.emailAddress,
+      name,
+      registrationNumber,
       ...form,
     };
 
-    console.log("Sending Data:", data);
-    try {
-      const res = await api.post("/api/users", data);
+    const res = await api.post("/api/users", data);
 
-      console.log(res.data);
+      
       alert("Profile saved successfully!");
-      navigate("/");
-
-      alert("Profile saved successfully!");
-
-      navigate("/"); // Home Page
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
     }
@@ -52,25 +62,10 @@ const CompleteProfile = () => {
         <h1 className="text-3xl font-bold mb-6">Complete Your Profile</h1>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Registration Number"
-            className="w-full rounded border p-3 text-white"
-            value={form.registrationNumber}
-            onChange={(e) =>
-              setForm({ ...form, registrationNumber: e.target.value })
-            }
-          />
+         
 
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="w-full rounded border p-3 text-white"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
-
-          <select
+          
+          <select required
             className="w-full rounded border border-gray-600 bg-gray-800 p-3 text-white"
             value={form.gender}
             onChange={(e) => setForm({ ...form, gender: e.target.value })}
@@ -80,7 +75,7 @@ const CompleteProfile = () => {
             <option>Female</option>
           </select>
 
-          <select
+          <select required
             className="w-full rounded border border-gray-600 bg-gray-800 p-3 text-white"
             value={form.hostelBlock}
             onChange={(e) => setForm({ ...form, hostelBlock: e.target.value })}
